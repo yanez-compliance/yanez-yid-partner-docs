@@ -34,15 +34,35 @@ backend secret storage.
 
 Partners generate their own Ed25519 key pair. Yanez stores only the public key.
 
-The public JWK should look like:
+```python
+import base64
+import json
 
-```json
-{
-  "kty": "OKP",
-  "crv": "Ed25519",
-  "x": "base64url-encoded-32-byte-public-key"
-}
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+from cryptography.hazmat.primitives.serialization import (
+    Encoding, NoEncryption, PrivateFormat, PublicFormat,
+)
+
+
+def b64url(b: bytes) -> str:
+    return base64.urlsafe_b64encode(b).rstrip(b"=").decode()
+
+
+priv = Ed25519PrivateKey.generate()
+raw_priv = priv.private_bytes(Encoding.Raw, PrivateFormat.Raw, NoEncryption())
+raw_pub = priv.public_key().public_bytes(Encoding.Raw, PublicFormat.Raw)
+
+public_key_jwk = {"kty": "OKP", "crv": "Ed25519", "x": b64url(raw_pub)}
+
+print("=== Private key (hex) — store securely, set as YANEZ_PRIVATE_KEY_HEX ===")
+print(raw_priv.hex())
+print()
+print("=== Public key JWK — send to Yanez onboarding ===")
+print(json.dumps(public_key_jwk, indent=2))
 ```
+
+Requires `pip install cryptography`. Run once, store the private key hex in backend secret
+storage, and send Yanez only the public JWK.
 
 ## Launch Gates
 

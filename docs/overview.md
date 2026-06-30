@@ -51,7 +51,6 @@ Yanez does not store partner private keys.
 | --- | --- |
 | Partner request signing | Authenticate partner backend requests to Yanez. |
 | Record validation API | Validate a `yid` and optional public-key binding. |
-| Partner public key discovery | Let Yanez apps discover active partner public keys. |
-| Activity APIs | Read or report supported user activity events. |
+| Activity APIs | Read partner-scoped user activity events. |
 | Platform handoff | Start or return from web, Android, or iPhone user flows. |
 

@@ -12,26 +12,14 @@ capture and Apple App Attest, while partner secrets stay on the partner backend.
 | Partner backend | Signs partner API requests and validates resulting `yid` values. |
 | Yanez backend | Verifies partner signatures, attestation, and record state. |
 
-## Public Key Discovery
-
-When the iPhone app needs to verify a partner-signed payload, it can fetch the
-partner's active public keys:
-
-```http
-GET /api/partners/{partner_id}/public-keys
-```
-
 ## App Handoff
 
-The exact iPhone handoff contract should be confirmed for the production app.
-Common options are:
+The Yanez app opens via a signed `yanezbio://sign?` deep link. The partner
+backend generates and signs the deep link; the partner app delivers it as a QR
+code or tappable link.
 
-- Universal Links
-- custom URL schemes
-- app-to-app return URLs
-
-Use Universal Links when possible because they are harder to spoof than custom
-schemes.
+See [Deep Link Signing](../deep-link-signing.md) for the full parameter
+reference, signing steps, and a Python example.
 
 ## User Activity and Integrations
 

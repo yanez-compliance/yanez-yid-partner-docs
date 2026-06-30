@@ -50,7 +50,7 @@ from datetime import datetime, timezone
 
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 
-BASE_URL = "https://sandbox.example.yanez.com"
+BASE_URL = "https://ptest.yanez.ai"
 PARTNER_ID = "ptr_abc123"
 KEY_ID = "partner_key_2026_01"
 PRIVATE_KEY_HEX = "replace-with-32-byte-private-key-hex"
@@ -102,12 +102,13 @@ Yanez verifies:
 2. the partner account is active
 3. the `kid` resolves to an active signing key
 4. the signing key is inside its validity window
-5. the timestamp is within the allowed tolerance
-6. the body hash matches the raw request body
-7. the Ed25519 signature matches the canonical string
-8. the nonce has not been used before for the same partner and key
+5. `X-Yanez-Signature-Alg` matches the algorithm of the resolved key
+6. the timestamp is within **±300 seconds** of server time
+7. the body hash matches the raw request body
+8. the Ed25519 signature matches the canonical string
+9. the nonce has not been used before for the same partner and key (replay window: 600 seconds)
 
-Authentication failures return a generic `401 Unauthorized`.
+Authentication failures return a generic `401 Unauthorized` — the response does not indicate which check failed.
 
 ## Key Rotation
 

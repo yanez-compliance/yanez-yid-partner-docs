@@ -1,5 +1,7 @@
 # Yanez Biometrics Partner Integration
 
+> **DRAFT** — This documentation is a work in progress and not yet ready for use.
+
 Use these docs to integrate a partner application with Yanez Biometrics.
 
 Yanez supports partners whose user experience starts from:
@@ -27,18 +29,17 @@ partner-to-Yanez backend requests are signed.
 2. [Core Concepts](concepts.md)
 3. [Authentication](authentication.md)
 4. Your platform guide
-5. [Backend API](api/backend-api.md)
-6. [Testing](testing.md)
-7. [Production Checklist](production-checklist.md)
+5. [Deep Link Signing](deep-link-signing.md)
+6. [Callback Verification](callback.md)
+7. [Backend API](api/backend-api.md)
+8. [Testing](testing.md)
+9. [Production Checklist](production-checklist.md)
+10. [Glossary](glossary.md)
 
 ## Environments
 
-Yanez will provide environment-specific base URLs during onboarding.
-
 | Environment | Base URL |
 | --- | --- |
-| Sandbox | `https://sandbox.example.yanez.com` |
-| Production | `https://api.example.yanez.com` |
-
-Replace these placeholders with the values assigned to your partner account.
+| Test | `https://ptest.yanez.ai` |
+| Production | TBD |
 

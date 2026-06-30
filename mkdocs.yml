@@ -12,9 +12,21 @@ theme:
     - content.code.copy
     - content.tabs.link
   palette:
+    - scheme: slate
+      primary: black
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
     - scheme: default
       primary: black
-      accent: teal
+      accent: deep-purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+extra_css:
+  - stylesheets/extra.css
 
 markdown_extensions:
   - admonition
@@ -31,6 +43,8 @@ nav:
   - Onboarding: onboarding.md
   - Core Concepts: concepts.md
   - Authentication: authentication.md
+  - Deep Link Signing: deep-link-signing.md
+  - Callback Verification: callback.md
   - Backend API:
       - API Reference: api/backend-api.md
       - Errors: api/errors.md
@@ -41,3 +55,4 @@ nav:
   - Testing: testing.md
   - Privacy and Security: privacy-security.md
   - Production Checklist: production-checklist.md
+  - Glossary: glossary.md
