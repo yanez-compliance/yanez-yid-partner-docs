@@ -1,0 +1,43 @@
+site_name: Yanez Biometrics Partner Integration
+site_description: Public integration documentation for partners building with Yanez Biometrics.
+site_url: https://docs.example.yanez.com/
+repo_url: https://github.com/yanez-compliance/yanez-partner-docs
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: black
+      accent: teal
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Overview: overview.md
+  - Onboarding: onboarding.md
+  - Core Concepts: concepts.md
+  - Authentication: authentication.md
+  - Backend API:
+      - API Reference: api/backend-api.md
+      - Errors: api/errors.md
+  - Platform Guides:
+      - Web Apps: platforms/web.md
+      - Android Apps: platforms/android.md
+      - iPhone Apps: platforms/ios.md
+  - Testing: testing.md
+  - Privacy and Security: privacy-security.md
+  - Production Checklist: production-checklist.md
