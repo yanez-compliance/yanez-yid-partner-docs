@@ -51,9 +51,3 @@ returned `yid` using:
 POST /api/partners/records/validate
 ```
 
-When the flow completes a signing, the Yanez app reports it via
-`POST /api/partners/signing-events` — see
-[Report a Signing Event](../api/backend-api.md#report-a-signing-event). These
-are app-reported activity signals; trust for the signature itself comes from
-[callback verification](../callback.md).
-

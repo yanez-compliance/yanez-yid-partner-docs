@@ -1,8 +1,7 @@
 # Overview
 
-Yanez Biometrics lets a partner verify that a user has a Yanez biometric identity
-and, when supported by the partner flow, record user activity associated with
-that Yanez identity.
+Yanez Biometrics lets a partner verify that a user has a Yanez biometric
+identity.
 
 The main identifiers are:
 
@@ -26,7 +25,6 @@ Yanez block_search service
   -> stores partner public keys
   -> verifies signed partner requests
   -> validates Yanez identity records
-  -> stores supported activity events
 ```
 
 The browser or mobile app should not hold the partner private key. If a user
@@ -51,6 +49,5 @@ Yanez does not store partner private keys.
 | --- | --- |
 | Partner request signing | Authenticate partner backend requests to Yanez. |
 | Record validation API | Validate a `yid` and optional public-key binding. |
-| Activity APIs | Read partner-scoped user activity events. |
 | Platform handoff | Start or return from web, Android, or iPhone user flows. |
 

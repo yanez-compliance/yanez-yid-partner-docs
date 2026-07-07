@@ -17,7 +17,7 @@ The browser must never receive the partner private signing key.
 3. The partner backend stores local pending state.
 4. The browser displays the returned link or QR code (see [Deep Link Signing](../deep-link-signing.md)).
 5. The Yanez app or browser ceremony completes.
-6. The partner backend validates the resulting `yid` or activity with Yanez.
+6. The partner backend validates the resulting `yid` with Yanez.
 
 ## Backend Responsibilities
 
