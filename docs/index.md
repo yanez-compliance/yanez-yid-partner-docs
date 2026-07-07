@@ -41,5 +41,5 @@ partner-to-Yanez backend requests are signed.
 | Environment | Base URL |
 | --- | --- |
 | Test | `https://ptest.yanez.ai` |
-| Production | TBD |
+| Production | `https://yid.yanez.ai` |
 

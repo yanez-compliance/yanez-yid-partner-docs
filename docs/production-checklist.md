@@ -17,8 +17,8 @@ Before production launch, confirm:
 
 **Callback security**
 
-- Backend verifies the BLS signature on every callback; the `verified` field in
-  the callback payload is advisory only and is ignored.
+- Backend independently verifies the BLS signature on every callback; no
+  client-asserted verification status is trusted.
 - Callback is verified against the exact bytes of the challenge the backend
   issued (message byte-equality).
 - Challenges are single-use: marked consumed on first receipt, regardless of

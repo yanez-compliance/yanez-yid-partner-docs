@@ -24,15 +24,23 @@ GET /api/partners/{partner_id}/public-keys
 
 ## App Handoff
 
-The exact Android handoff contract should be confirmed for the production app.
-Common options are:
+The Yanez Android app opens via a signed `yanezbio://sign` deep link — the same
+signed link contract as iOS. The app registers this as a **custom-scheme deep
+link** (a `BROWSABLE` intent filter on the `yanezbio` scheme) — it is not an
+http/https App Link, so there is no domain (Digital Asset Links) verification. A
+partner delivers the link as a QR code or tappable link and the OS routes it to
+the installed Yanez app.
 
-- Android App Links
-- custom URI schemes
-- explicit intents between installed applications
+See [Deep Link Signing](../deep-link-signing.md) for the full parameter
+reference, signing steps, and a Python example.
 
-Whichever mechanism is used, the partner private key remains on the backend.
-The Android app receives only public or short-lived flow data.
+The partner private key remains on the backend. The Android app receives only
+public or short-lived flow data.
+
+Android-specific: the Yanez Android app only POSTs a `method=post` callback to an
+HTTPS URL on a Yanez-allowlisted domain (`yanezcompliance.com` and subdomains).
+If your backend callback is on your own domain, use `method=redirect` or have
+your callback domain allowlisted. See [Callback Verification](../callback.md#delivery-modes).
 
 ## Completion
 
@@ -43,12 +51,9 @@ returned `yid` using:
 POST /api/partners/records/validate
 ```
 
-If the flow reports a signing event, the app can report it to:
-
-```http
-POST /api/partners/signing-events
-```
-
-Current phase note: signing events are app-reported activity events. Treat them
-as audit/activity signals unless your Yanez launch agreement states otherwise.
+When the flow completes a signing, the Yanez app reports it via
+`POST /api/partners/signing-events` — see
+[Report a Signing Event](../api/backend-api.md#report-a-signing-event). These
+are app-reported activity signals; trust for the signature itself comes from
+[callback verification](../callback.md).
 

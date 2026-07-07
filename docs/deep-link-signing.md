@@ -10,12 +10,18 @@ QR code or tappable link.
 yanezbio://sign?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&event=<event>&description=<text>&app_id=<partner_id>[&kid=<kid>]&app_sig=<b64url>
 ```
 
+Production builds register the `yanezbio://sign` scheme; integrate against
+`yanezbio://` for production. Suffixed test schemes are platform-specific: the
+Android `dev` and `partner` build flavors register `yanezbio-dev://sign` and
+`yanezbio-partner://sign`. iOS currently registers only `yanezbio://` (no
+suffixed scheme yet), so iOS test builds use `yanezbio://` as well.
+
 | Parameter | Required | Notes |
 | --- | --- | --- |
-| `message` | yes | Base64url-encoded JSON payload (see below). |
-| `callback` | yes | URL the Yanez app posts results to. |
-| `method` | yes | Always `post`. |
-| `request_id` | yes | UUID. Use a fresh value per request. |
+| `message` | yes | Base64url-encoded payload the app signs verbatim (see [Message Payload](#message-payload)). |
+| `callback` | yes | URL the Yanez app posts results to. For `method=post` this must be an HTTPS URL on a Yanez-allowlisted domain — see [Callback Verification](callback.md#delivery-modes). |
+| `method` | yes | `post` or `redirect` — selects callback delivery (case-insensitive). If omitted or unrecognized the app defaults to `redirect`. See [Delivery Modes](callback.md#delivery-modes). |
+| `request_id` | yes | Unique per-request identifier (a UUID works, but the app treats it as an opaque string). Use a fresh value per request. |
 | `event` | yes | See [Supported Events](#supported-events). |
 | `description` | yes | Short human-readable label shown in the Yanez app. |
 | `app_id` | yes | Your `partner_id` (e.g. `ptr_416582cd9ea9bb6c3750de1c`). |
@@ -28,6 +34,12 @@ yanezbio://sign?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&ev
 | --- | --- |
 | Enroll a user | `enroll` |
 | Transaction signing | `transaction.signed` |
+
+`event` is a required, non-empty string; the Yanez app treats it as opaque and
+does not validate or reject the value. Use the values above — `transaction.signed`
+is the canonical type the Yanez backend records for a signing. (Some test
+tooling emits `transaction_sign`; because the value is opaque to the app, either
+is accepted, but prefer `transaction.signed` for consistency with the backend.)
 
 ## Message Payload
 
@@ -47,6 +59,13 @@ The `message` parameter is a base64url-encoded JSON object:
   "exp": 1783000576
 }
 ```
+
+The Yanez app does **not** parse or validate these fields. It treats the decoded
+`message` as opaque bytes: it signs them verbatim (BLS) and echoes the same
+base64url string back in the callback. The JSON shape above is a
+partner-backend convention so your own callback handler can correlate and
+inspect the request — the app only requires that `message` is valid base64url.
+Keep the exact bytes stable, since the signature is computed over them.
 
 ## Signing
 

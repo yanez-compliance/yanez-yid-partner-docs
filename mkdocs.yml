@@ -1,7 +1,7 @@
 site_name: Yanez Biometrics Partner Integration
 site_description: Public integration documentation for partners building with Yanez Biometrics.
 site_url: https://docs.example.yanez.com/
-repo_url: https://github.com/yanez-compliance/yanez-partner-docs
+repo_url: https://github.com/yanez-compliance/yanez-yid-partner-docs
 
 theme:
   name: material

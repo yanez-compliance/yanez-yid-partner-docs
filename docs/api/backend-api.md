@@ -127,6 +127,29 @@ if __name__ == "__main__":
     print("Confirmed" if confirmed else f"Rejected: {result}")
 ```
 
+## Report a Signing Event
+
+```http
+POST /api/partners/signing-events
+```
+
+Records an app-reported signing event against a `yid`. This endpoint is called
+by the Yanez mobile app after it completes a signing flow — not by the partner
+backend. It is documented here so partners understand the source of the
+`transaction.signed` entries they see in the activity feed.
+
+Treat these as audit/activity signals. Trust for the underlying signature still
+comes from [callback verification](../callback.md), not from this event.
+
+### Request
+
+```json
+{
+  "yid": "796aaf67d496447fa4059dcea80b03aa",
+  "payload": "<raw signed deep-link string>"
+}
+```
+
 ## List Partner-Scoped Activities
 
 ```http

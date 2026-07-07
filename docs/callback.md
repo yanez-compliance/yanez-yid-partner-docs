@@ -24,9 +24,7 @@ The Yanez app POSTs `application/json`:
     { "threshold_tier": "high",   "group_public_key": "0x<48-byte G1 hex>", "eth_address": "0x<EIP-55>" }
   ],
   "matched_tier": "high",
-  "signature": "0x<96-byte G2 hex>",
-  "signed_at": "2026-06-15T20:00:00Z",
-  "verified": true
+  "signature": "0x<96-byte G2 hex>"
 }
 ```
 
@@ -35,11 +33,34 @@ The Yanez app POSTs `application/json`:
 | `request_id` | Correlates the callback to the challenge the backend issued. |
 | `yid` | Stable unique Yanez ID for the user. |
 | `message` | The exact `message` value from the deep link, base64url-encoded. |
-| `keys` | One entry per threshold tier. For enrollment, all tiers are present. For step-up, only the `matched_tier` entry is required. |
+| `keys` | One entry per threshold tier. The app always sends **all** registered tiers (enrollment and step-up alike); for step-up only the `matched_tier` entry is strictly required to verify. |
 | `matched_tier` | The tier whose key produced `signature`. |
 | `signature` | A single BLS12-381 G2 signature (96 bytes), produced by the matched tier's key. |
-| `signed_at` | ISO-8601 UTC timestamp from the Yanez app. |
-| `verified` | **Advisory only — the backend MUST ignore this field.** Always verify the signature independently. |
+
+The callback carries no verification-status flag. **The backend MUST
+independently verify the BLS signature (see [Verification
+Steps](#verification-steps)) and never trust any client-asserted "verified"
+state.**
+
+## Delivery Modes
+
+The deep link's `method` parameter selects how the Yanez app returns the result:
+
+| `method` | Delivery |
+| --- | --- |
+| `post` | The payload above is sent as an `application/json` POST body to the `callback` URL. |
+| `redirect` | The same fields are returned as query parameters appended to the `callback` URL (`keys` is serialized as a JSON string parameter). |
+
+**`post` callbacks require an allowlisted HTTPS domain.** The Android app
+delivers a `post` callback only to an **HTTPS** URL whose host is a
+Yanez-allowlisted domain (currently `yanezcompliance.com` and its subdomains);
+any other host is silently rejected. `redirect` callbacks have no domain
+restriction. iOS does not currently enforce this allowlist, but do not rely on
+the asymmetry. If your callback runs on your own domain, use `method=redirect`
+or ask Yanez to allowlist your callback domain before launch.
+
+The verification steps below are identical for both modes — always verify the
+signature over the decoded `message` bytes regardless of how the result arrived.
 
 ## Verification Steps
 
