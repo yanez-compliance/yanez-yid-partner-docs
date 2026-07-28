@@ -1,6 +1,6 @@
 # Yanez Biometrics Partner Integration
 
-> **DRAFT** — This documentation is a work in progress and not yet ready for use.
+> **DRAFT** — This documentation is a work in progress.
 
 Use these docs to integrate a partner application with Yanez Biometrics.
 
