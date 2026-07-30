@@ -21,7 +21,7 @@ Partner applications do **not** embed this app. They hand off to it with a
 [![Get it on Google Play](assets/badge-google-play.png)](https://play.google.com/store/apps/details?id=ai.yanez.yid){ .badge .badge--google data-os="android" }
 </div>
 
-<p class="app-panel__req">Requires iOS 17.6 or later (v1.0) · Android 9.0 or later (v1.1.0)</p>
+<p class="app-panel__req">Requires iOS 17.6 or later (v1.1.0) · Android 9.0 or later (v1.1.0)</p>
 </div>
 
 ## Supported versions
