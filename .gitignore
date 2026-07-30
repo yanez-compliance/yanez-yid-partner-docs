@@ -3,6 +3,7 @@ site/
 .cache/
 .venv/
 __pycache__/
+.idea/
 
 # internal, not for the public repo
 complete implementation v0.2.pdf

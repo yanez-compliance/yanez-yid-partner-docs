@@ -1,6 +1,0 @@
-{
-  "name": "yanez-apidocs",
-  "compatibility_date": "2026-07-01",
-  "assets": { "directory": "./site" },
-  "routes": [{ "pattern": "docs.yanez.ai/apidocs/*", "zone_name": "yanez.ai" }]
-}

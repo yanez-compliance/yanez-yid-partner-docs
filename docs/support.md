@@ -7,7 +7,7 @@ description: Contacts, operational limits, key rotation, and escalation paths fo
 
 ## Get in touch
 
-support@yanez.ai
+<support@yanez.ai>
 
 When you write in, include your `partner_id`, `kid`, the environment, the approximate UTC timestamp, and the `request_id` if the issue involves a deep link or callback. Never include a private key, and never paste one into an issue.
 

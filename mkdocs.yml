@@ -1,7 +1,6 @@
 site_name: Yanez Biometrics Partner Portal
 site_description: Integration documentation, releases, and downloads for partners building with Yanez Biometrics.
-site_url: https://docs.yanez.ai/apidocs/
-site_dir: site/apidocs
+site_url: https://docs.yanez.ai/
 repo_url: https://github.com/yanez-compliance/yanez-yid-partner-docs
 
 theme:
