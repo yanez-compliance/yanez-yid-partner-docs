@@ -13,10 +13,6 @@ Partner applications do **not** embed this app. They hand off to it with a
 [signed deep link](deep-link-signing.md).
 
 <div class="app-panel" markdown>
-
-![YanezYID app icon](assets/yanezyid-icon.jpg){ .app-panel__icon }
-
-<div class="app-panel__body" markdown>
 <p class="app-panel__name">YanezYID</p>
 <p class="app-panel__sub">YANEZ COMPLIANCE INC. · Free · Utilities</p>
 
@@ -26,8 +22,6 @@ Partner applications do **not** embed this app. They hand off to it with a
 </div>
 
 <p class="app-panel__req">Requires iOS 17.6 or later (v1.0) · Android 9.0 or later (v1.1.0)</p>
-</div>
-
 </div>
 
 ## Supported versions

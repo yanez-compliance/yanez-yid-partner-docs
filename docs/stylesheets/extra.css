@@ -81,34 +81,11 @@
 /* ------------------------------------------------- App download panel --- */
 
 .md-typeset .app-panel {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1.5rem;
   margin: 1.6rem 0 2rem;
   padding: 1.6rem;
   border: 1px solid var(--yz-hero-border);
   border-radius: 0.7rem;
   background: linear-gradient(135deg, var(--yz-hero-from), var(--yz-hero-to));
-}
-
-/* A standalone markdown image is wrapped in <p> — neutralise it so the
-   icon behaves as a flex item. */
-.md-typeset .app-panel > p {
-  flex: 0 0 auto;
-  margin: 0;
-}
-
-.md-typeset img.app-panel__icon {
-  display: block;
-  width: 104px;
-  height: 104px;
-  border-radius: 23%;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
-}
-
-.md-typeset .app-panel__body {
-  flex: 1 1 19rem;
 }
 
 .md-typeset .app-panel__name {
@@ -151,6 +128,7 @@
 
 .md-typeset a.badge {
   display: inline-flex;
+  align-items: center;
   border-radius: 0.5rem;
   transition: transform 125ms, box-shadow 125ms;
 }
@@ -164,9 +142,15 @@
   display: block;
 }
 
+/* Pad the <a>, never the <img>: Material sets box-sizing:border-box
+   globally, so padding on the image would eat into its height instead of
+   adding to it — which rendered the Apple badge at half size. */
+.md-typeset a.badge--apple {
+  padding: calc(var(--badge-h) * 0.244);
+}
+
 .md-typeset a.badge--apple img {
   height: var(--badge-h);
-  padding: calc(var(--badge-h) * 0.244);
 }
 
 .md-typeset a.badge--google img {
