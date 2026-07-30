@@ -3,11 +3,14 @@
 This page documents the partner-facing API surface. Examples use sandbox
 placeholder hosts and credentials.
 
+| Environment | Base URL |
+| --- | --- |
+| Test | `https://ptest.yanez.ai` |
+| Production | `https://yid.yanez.ai` |
+
 ## Validate a Record
 
-```http
-POST /api/partners/records/validate
-```
+`POST`{ .method .post } `/api/partners/records/validate`
 
 Confirms whether a Yanez identity record exists and, optionally, that a public
 key is bound to it. This is the only registry endpoint — there is no separate

@@ -1,17 +1,26 @@
-site_name: Yanez Biometrics Partner Integration
-site_description: Public integration documentation for partners building with Yanez Biometrics.
+site_name: Yanez Biometrics Partner Portal
+site_description: Integration documentation, releases, and downloads for partners building with Yanez Biometrics.
 site_url: https://docs.yanez.ai/apidocs/
 site_dir: site/apidocs
 repo_url: https://github.com/yanez-compliance/yanez-yid-partner-docs
 
 theme:
   name: material
+  logo: assets/yanez-logo.svg
+  favicon: assets/yanez-logo.svg
+  icon:
+    repo: fontawesome/brands/github
   features:
+    - navigation.tabs
     - navigation.sections
     - navigation.indexes
     - navigation.top
+    - navigation.footer
+    - toc.follow
     - content.code.copy
     - content.tabs.link
+    - search.suggest
+    - search.highlight
   palette:
     - scheme: slate
       primary: black
@@ -20,7 +29,7 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
     - scheme: default
-      primary: black
+      primary: white
       accent: deep-purple
       toggle:
         icon: material/brightness-7
@@ -29,31 +38,74 @@ theme:
 extra_css:
   - stylesheets/extra.css
 
+extra_javascript:
+  - javascripts/portal.js
+
+plugins:
+  - search
+  - blog:
+      blog_dir: changelog
+      blog_toc: true
+      post_url_format: "{slug}"
+      post_excerpt: required
+      archive: false
+      categories_allowed:
+        - Backend API
+        - iOS
+        - Android
+        - Web
+        - Breaking
+        - Docs
+
 markdown_extensions:
   - admonition
   - attr_list
   - md_in_html
+  - tables
+  - toc:
+      permalink: true
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
   - Home: index.md
-  - Overview: overview.md
-  - Onboarding: onboarding.md
-  - Core Concepts: concepts.md
-  - Authentication: authentication.md
-  - Deep Link Signing: deep-link-signing.md
-  - Callback Verification: callback.md
-  - Backend API:
-      - API Reference: api/backend-api.md
-      - Errors: api/errors.md
-  - Platform Guides:
-      - Web Apps: platforms/web.md
-      - Android Apps: platforms/android.md
-      - iPhone Apps: platforms/ios.md
-  - Testing: testing.md
-  - Privacy and Security: privacy-security.md
-  - Production Checklist: production-checklist.md
-  - Glossary: glossary.md
+  - Documentation:
+      - Start Here:
+          - Quickstart: quickstart.md
+          - Overview: overview.md
+          - Onboarding: onboarding.md
+          - Core Concepts: concepts.md
+      - Integration:
+          - Authentication: authentication.md
+          - Deep Link Signing: deep-link-signing.md
+          - Callback Verification: callback.md
+      - Backend API:
+          - API Reference: api/backend-api.md
+          - Errors: api/errors.md
+      - Platform Guides:
+          - Web Apps: platforms/web.md
+          - Android Apps: platforms/android.md
+          - iPhone Apps: platforms/ios.md
+      - Going Live:
+          - Testing: testing.md
+          - Privacy and Security: privacy-security.md
+          - Production Checklist: production-checklist.md
+          - Glossary: glossary.md
+  - Changelog:
+      - changelog/index.md
+  - Download: download.md
+  - Support: support.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/yanez-compliance
+      name: Yanez on GitHub
+    - icon: material/web
+      link: https://www.yanez.ai
+      name: yanez.ai

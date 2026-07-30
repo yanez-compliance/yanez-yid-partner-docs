@@ -6,6 +6,10 @@
   --md-accent-fg-color--light:  #7a53fd;
   --md-accent-fg-color--dark:   #4b1ee0;
   --md-typeset-a-color:         #5a2ffe;
+
+  --yz-hero-from:               rgba(90, 47, 254, 0.10);
+  --yz-hero-to:                 rgba(90, 47, 254, 0.00);
+  --yz-hero-border:             rgba(90, 47, 254, 0.28);
 }
 
 /* Dark mode: yanez.ai navy backgrounds */
@@ -15,4 +19,289 @@
   --md-default-bg-color--dark:  #04080e;
   --md-code-bg-color:           #0d1421;
   --md-typeset-a-color:         #7a53fd;
+
+  --yz-hero-from:               rgba(122, 83, 253, 0.16);
+  --yz-hero-to:                 rgba(122, 83, 253, 0.00);
+  --yz-hero-border:             rgba(122, 83, 253, 0.32);
+}
+
+/* ---------------------------------------------------------------- Hero --- */
+
+.md-typeset .hero {
+  margin: 0 0 3rem;
+  padding: 2.5rem 2rem 2rem;
+  border: 1px solid var(--yz-hero-border);
+  border-radius: 0.6rem;
+  background: linear-gradient(160deg, var(--yz-hero-from), var(--yz-hero-to));
+}
+
+.md-typeset .hero__eyebrow {
+  display: inline-block;
+  margin-bottom: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2rem;
+  background: var(--md-accent-fg-color);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.md-typeset .hero h2 {
+  margin: 0 0 0.8rem;
+  font-size: 1.85rem;
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.md-typeset .hero p {
+  max-width: 42rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .hero .md-button {
+  margin: 0.6rem 0.4rem 0 0;
+}
+
+/* The landing page hides the sidebar; keep the content column readable. */
+.md-typeset .grid.cards > ul > li {
+  border-radius: 0.4rem;
+  transition: border-color 125ms, box-shadow 125ms;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 0 0 1px var(--md-accent-fg-color);
+}
+
+/* ------------------------------------------------- App download panel --- */
+
+.md-typeset .app-panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 1.6rem 0 2rem;
+  padding: 1.6rem;
+  border: 1px solid var(--yz-hero-border);
+  border-radius: 0.7rem;
+  background: linear-gradient(135deg, var(--yz-hero-from), var(--yz-hero-to));
+}
+
+/* A standalone markdown image is wrapped in <p> — neutralise it so the
+   icon behaves as a flex item. */
+.md-typeset .app-panel > p {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.md-typeset img.app-panel__icon {
+  display: block;
+  width: 104px;
+  height: 104px;
+  border-radius: 23%;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 30%);
+}
+
+.md-typeset .app-panel__body {
+  flex: 1 1 19rem;
+}
+
+.md-typeset .app-panel__name {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.md-typeset .app-panel__sub {
+  margin: 0.2rem 0 0;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+}
+
+.md-typeset .app-panel__req {
+  margin: 0.7rem 0 0;
+  font-size: 0.65rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* Official store badges. Google's PNG ships with 41/168 of built-in clear
+   space; Apple's SVG is tight. Scale Google up and pad Apple so the visible
+   badges land on the same height. */
+.md-typeset .app-panel__badges {
+  --badge-h: 42px;
+  margin-top: 0.9rem;
+}
+
+/* Markdown wraps the two badge links in a <p>, so that is the flex row —
+   not .app-panel__badges itself. */
+.md-typeset .app-panel__badges p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.md-typeset a.badge {
+  display: inline-flex;
+  border-radius: 0.5rem;
+  transition: transform 125ms, box-shadow 125ms;
+}
+
+.md-typeset a.badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgb(90 47 254 / 38%);
+}
+
+.md-typeset a.badge img {
+  display: block;
+}
+
+.md-typeset a.badge--apple img {
+  height: var(--badge-h);
+  padding: calc(var(--badge-h) * 0.244);
+}
+
+.md-typeset a.badge--google img {
+  height: calc(var(--badge-h) * 1.488);
+}
+
+/* Both official badges are black artwork — lift them off the dark theme. */
+[data-md-color-scheme="slate"] .md-typeset a.badge {
+  background: #16161a;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 9%);
+}
+
+[data-md-color-scheme="slate"] .md-typeset a.badge:hover {
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 9%),
+              0 8px 20px rgb(90 47 254 / 45%);
+}
+
+/* Set by portal.js on the badge matching the visitor's OS. */
+.md-typeset a.badge--match {
+  box-shadow: 0 0 0 2px var(--md-accent-fg-color);
+}
+
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .app-panel {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .md-typeset .app-panel__badges {
+    justify-content: center;
+  }
+}
+
+/* ----------------------------------------------------------- QR codes --- */
+
+.md-typeset .qr-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  margin: 1.2rem 0;
+}
+
+.md-typeset figure.qr-card {
+  margin: 0;
+  text-align: center;
+}
+
+/* The SVGs carry their own white plate, so they stay scannable in dark mode. */
+.md-typeset figure.qr-card img {
+  display: block;
+  width: 160px;
+  height: 160px;
+  padding: 0.5rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 0.4rem;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.md-typeset figure.qr-card figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.68rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* Scanning a QR on the device that displays it does not work. */
+@media screen and (max-width: 44.9375em) {
+  .md-typeset .qr-grid { display: none; }
+}
+
+/* ------------------------------------------------------- HTTP method tags --- */
+
+.md-typeset .method {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.2rem;
+  font-family: var(--md-code-font-family);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #fff;
+  vertical-align: 0.08rem;
+}
+
+.md-typeset .method.get    { background: #12805c; }
+.md-typeset .method.post   { background: #2b6cb0; }
+.md-typeset .method.put    { background: #b7791f; }
+.md-typeset .method.delete { background: #c53030; }
+
+/* ------------------------------------------------------------- Changelog --- */
+
+/* Category chips on the post listing, styled as filter pills.
+   Note: the blog plugin emits .md-meta__link here, not .md-tag, and
+   .md-post__meta sits outside .md-typeset — do not prefix these. */
+.md-post__meta .md-meta__link {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 2rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.md-post__meta .md-meta__link:hover {
+  border-color: var(--md-accent-fg-color);
+}
+
+/* Breaking-change entries are called out in red. */
+.md-post__meta .md-meta__link[href*="category/breaking"] {
+  background: #c53030;
+  border-color: #c53030;
+  color: #fff;
+}
+
+/* --------------------------------------------------------- Search hint ⌘K --- */
+
+.md-search__form::after {
+  content: attr(data-yz-hint);
+  position: absolute;
+  top: 50%;
+  right: 0.6rem;
+  transform: translateY(-50%);
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--md-default-fg-color--lighter);
+  border-radius: 0.2rem;
+  font-size: 0.6rem;
+  color: var(--md-default-fg-color--light);
+  pointer-events: none;
+}
+
+[data-md-toggle="search"]:checked ~ .md-header .md-search__form::after {
+  content: "";
+  border: none;
+}
+
+@media screen and (max-width: 76.1875em) {
+  .md-search__form::after { content: ""; border: none; }
 }
