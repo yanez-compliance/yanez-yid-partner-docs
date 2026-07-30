@@ -53,7 +53,7 @@ The deep link's `method` parameter selects how the Yanez app returns the result:
 
 **`post` callbacks require an allowlisted HTTPS domain.** The Android app
 delivers a `post` callback only to an **HTTPS** URL whose host is a
-Yanez-allowlisted domain (currently `yanezcompliance.com` and its subdomains);
+Yanez-allowlisted domain (currently `yanez.ai` and its subdomains);
 any other host is silently rejected. `redirect` callbacks have no domain
 restriction. iOS does not currently enforce this allowlist, but do not rely on
 the asymmetry. If your callback runs on your own domain, use `method=redirect`
