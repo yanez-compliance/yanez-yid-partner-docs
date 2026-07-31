@@ -1,6 +1,6 @@
 ---
 title: Changelog
-description: API changes, Yanez app releases, and breaking-change notices for partners.
+description: API changes, YanezYID releases, and breaking-change notices for partners.
 ---
 
 # Changelog

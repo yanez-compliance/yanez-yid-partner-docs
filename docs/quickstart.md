@@ -245,7 +245,7 @@ You now have an authenticated backend. The user-facing flow is next:
 
 <div class="grid cards" markdown>
 
--   **1. Launch the Yanez app**
+-   **1. Launch YanezYID**
 
     ---
 
@@ -258,7 +258,7 @@ You now have an authenticated backend. The user-facing flow is next:
 
     ---
 
-    The Yanez app posts a BLS-signed result to your callback. Verify it
+    YanezYID posts a BLS-signed result to your callback. Verify it
     yourself — the payload carries no trusted status flag.
 
     [:octicons-arrow-right-24: Callback verification](callback.md)

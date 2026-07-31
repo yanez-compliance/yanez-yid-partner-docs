@@ -1,6 +1,6 @@
 # iPhone App Integration
 
-iPhone integrations use the Yanez iOS biometrics app or SDK flow for user
+iPhone integrations use YanezYID on iOS or an SDK flow for user
 capture and Apple App Attest, while partner secrets stay on the partner backend.
 
 ## Responsibilities
@@ -8,13 +8,13 @@ capture and Apple App Attest, while partner secrets stay on the partner backend.
 | Component | Responsibility |
 | --- | --- |
 | Partner iPhone app | Starts the user flow and displays status. |
-| Yanez iOS biometrics app | Performs biometric capture and Yanez app-side operations. |
+| YanezYID (iOS) | Performs biometric capture and YanezYID-side operations. |
 | Partner backend | Signs partner API requests and validates resulting `yid` values. |
 | Yanez backend | Verifies partner signatures, attestation, and record state. |
 
 ## App Handoff
 
-The Yanez app opens via a signed `yanezbio://sign?` deep link. The partner
+YanezYID opens via a signed `yanezbio://sign?` deep link. The partner
 backend generates and signs the deep link; the partner app delivers it as a QR
 code or tappable link.
 
@@ -23,7 +23,7 @@ reference, signing steps, and a Python example.
 
 ## User Activity and Integrations
 
-The Yanez iOS app can read user-scoped activity and integrations for a `yid`
+YanezYID on iOS can read user-scoped activity and integrations for a `yid`
 through app-attested Yanez endpoints:
 
 ```http

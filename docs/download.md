@@ -1,6 +1,6 @@
 ---
 title: Download and Versions
-description: Get the Yanez Biometrics app, check supported versions, and test deep links.
+description: Get the YanezYID app, check supported versions, and test deep links.
 ---
 
 # Download YanezYID

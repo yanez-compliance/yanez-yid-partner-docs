@@ -1,6 +1,6 @@
 # Yanez Partner Docs
 
-Public partner integration documentation for Yanez Biometrics.
+Public partner integration documentation for YanezYID.
 
 These docs are authored in Markdown and can be published as a static HTML site
 with MkDocs Material.

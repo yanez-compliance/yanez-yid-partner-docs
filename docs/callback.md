@@ -1,6 +1,6 @@
 # Callback Verification
 
-After the user completes a Yanez flow, the Yanez app POSTs the signed result
+After the user completes a Yanez flow, YanezYID POSTs the signed result
 directly to the partner backend's callback URL — not through the client. The
 callback may arrive from a different device (cross-device QR scan).
 
@@ -11,7 +11,7 @@ equal that challenge exactly.
 
 ## Callback Payload
 
-The Yanez app POSTs `application/json`:
+YanezYID POSTs `application/json`:
 
 ```json
 {
@@ -44,7 +44,7 @@ state.**
 
 ## Delivery Modes
 
-The deep link's `method` parameter selects how the Yanez app returns the result:
+The deep link's `method` parameter selects how YanezYID returns the result:
 
 | `method` | Delivery |
 | --- | --- |
@@ -105,7 +105,7 @@ def verify_bls(pubkey_g1: bytes, message: bytes, signature_g2: bytes) -> bool:
 ```
 
 `message` is the decoded (raw bytes) value of the `message` field — the same
-bytes the Yanez app signed verbatim.
+bytes YanezYID signed verbatim.
 
 ## Address Derivation
 

@@ -1,6 +1,6 @@
 # Overview
 
-Yanez Biometrics lets a partner verify that a user has a Yanez biometric
+YanezYID lets a partner verify that a user has a Yanez biometric
 identity.
 
 The main identifiers are:

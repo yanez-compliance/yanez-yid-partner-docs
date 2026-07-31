@@ -4,7 +4,7 @@ hide:
   - toc
 ---
 
-# Yanez Biometrics Partner Portal
+# YanezYID Partner Portal
 
 <div class="hero" markdown>
 
@@ -45,7 +45,7 @@ leave your backend, and every partner request is signed end to end.
 
     ---
 
-    Deep-link handoff to the Yanez Android app, plus build-flavor URI schemes.
+    Deep-link handoff to YanezYID on Android, plus build-flavor URI schemes.
 
     [:octicons-arrow-right-24: Android integration](platforms/android.md)
 
@@ -53,7 +53,7 @@ leave your backend, and every partner request is signed end to end.
 
     ---
 
-    Handoff to the Yanez iOS app with App Attest, signed from your backend.
+    Handoff to YanezYID on iOS with App Attest, signed from your backend.
 
     [:octicons-arrow-right-24: iOS integration](platforms/ios.md)
 
@@ -76,7 +76,7 @@ leave your backend, and every partner request is signed end to end.
 
     ---
 
-    Build and sign the `yanezbio://sign` link that launches the Yanez app.
+    Build and sign the `yanezbio://sign` link that launches YanezYID.
 
     [:octicons-arrow-right-24: Deep link signing](deep-link-signing.md)
 
@@ -124,7 +124,7 @@ leave your backend, and every partner request is signed end to end.
 
     Store links, supported versions, and the deep-link testbed.
 
-    [:octicons-arrow-right-24: Get the Yanez app](download.md)
+    [:octicons-arrow-right-24: Get YanezYID](download.md)
 
 -   :material-lifebuoy:{ .lg .middle } **Support**
 

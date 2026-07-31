@@ -14,11 +14,11 @@
 
 **Address** — `EIP-55(keccak256(pubkey_g1)[-20:])`. A stable, human-referenceable identifier derived from a group public key. Not a usable Ethereum address.
 
-**Challenge** — A nonce-based, time-boxed, single-use payload issued by the partner backend and signed by the Yanez app. Binds the signature to a specific user, action, and context.
+**Challenge** — A nonce-based, time-boxed, single-use payload issued by the partner backend and signed by YanezYID. Binds the signature to a specific user, action, and context.
 
 **request_id** — The unique identifier for a challenge. Correlates the callback to the challenge that was issued.
 
-**Callback** — The out-of-band POST the Yanez app sends to the partner backend's public URL after signing a challenge. Not authenticated by the user's session — trust comes from the challenge.
+**Callback** — The out-of-band POST YanezYID sends to the partner backend's public URL after signing a challenge. Not authenticated by the user's session — trust comes from the challenge.
 
 **Registry** — The Yanez source of truth for uniqueness and the `yid ↔ keys` mapping. The only thing that proves a `(yid, keys)` pair represents a genuine, unique human.
 

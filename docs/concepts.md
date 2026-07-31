@@ -33,7 +33,7 @@ Do not infer internal structure from the value.
 
 ## Bio-Derived Keys (BLS)
 
-The Yanez app derives cryptographic keys from the user's biometric on-device.
+YanezYID derives cryptographic keys from the user's biometric on-device.
 The biometric never leaves the device and is never stored.
 
 The scheme is **BLS12-381 G2Basic**:
