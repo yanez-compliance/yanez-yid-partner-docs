@@ -46,12 +46,6 @@ in the browser and `{DEEP_LINK_BASE}` 302-redirects the user to the App Store
 or Google Play automatically, based on their device. This is what makes the
 HTTPS form safe to render as a **QR code**: it never dead-ends.
 
-!!! info "Falls back to the store, never fails silently"
-
-    If the installed app hasn't claimed the domain yet, the link simply opens
-    the App Store / Play Store listing instead of the app — the same
-    graceful fallback a user with no app installed gets.
-
 ## Supported Events
 
 | Event | `event` value |
