@@ -14,12 +14,22 @@ capture and Apple App Attest, while partner secrets stay on the partner backend.
 
 ## App Handoff
 
-YanezYID opens via a signed `yanezbio://sign?` deep link. The partner
-backend generates and signs the deep link; the partner app delivers it as a QR
-code or tappable link.
+YanezYID opens via a signed deep link. Deliver it as an **HTTPS Universal
+Link**: `{DEEP_LINK_BASE}?...` (e.g. `https://yid.yanez.ai/open?...`). The
+link is verified against `/.well-known/apple-app-site-association` on that
+domain and falls back to the App Store automatically when the app isn't
+installed or hasn't claimed the link yet, so it is safe to render as a QR code.
+
+The **custom scheme** `yanezbio://sign?...` is **deprecated**. It still works
+but fails silently if the app isn't installed — migrate to the HTTPS form. See
+[Custom Scheme (Deprecated)](../deep-link-signing.md#custom-scheme-deprecated).
+
+The partner backend generates and signs the deep link; the partner app
+delivers it as a QR code or tappable link.
 
 See [Deep Link Signing](../deep-link-signing.md) for the full parameter
-reference, signing steps, and a Python example.
+reference, the `DEEP_LINK_BASE` per environment, signing steps, and a Python
+example.
 
 ## User Activity and Integrations
 

@@ -249,8 +249,8 @@ You now have an authenticated backend. The user-facing flow is next:
 
     ---
 
-    Build and sign a `yanezbio://sign` deep link, then deliver it as a QR code
-    or tappable link.
+    Build and sign an HTTPS deep link (`{DEEP_LINK_BASE}?...`), then deliver
+    it as a QR code or tappable link.
 
     [:octicons-arrow-right-24: Deep link signing](deep-link-signing.md)
 

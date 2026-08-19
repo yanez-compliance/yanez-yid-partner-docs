@@ -76,7 +76,7 @@ leave your backend, and every partner request is signed end to end.
 
     ---
 
-    Build and sign the `yanezbio://sign` link that launches YanezYID.
+    Build and sign the HTTPS App Link that launches YanezYID.
 
     [:octicons-arrow-right-24: Deep link signing](deep-link-signing.md)
 

@@ -4,17 +4,24 @@ YanezYID opens partner-initiated flows via a signed deep link. Partners
 generate the deep link on the partner backend and deliver it to the user as a
 QR code or tappable link.
 
+Deliver the deep link as an **HTTPS App Link** (an iOS Universal Link / Android
+App Link). The `yanezbio://` custom scheme is
+[deprecated](#custom-scheme-deprecated): it still works, but migrate to the
+HTTPS form.
+
 ## URL Format
 
 ```
-yanezbio://sign?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&event=<event>&description=<text>&app_id=<partner_id>[&kid=<kid>]&app_sig=<b64url>
+{DEEP_LINK_BASE}?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&event=<event>&description=<text>&app_id=<partner_id>[&kid=<kid>]&app_sig=<b64url>
 ```
 
-Production builds register the `yanezbio://sign` scheme; integrate against
-`yanezbio://` for production. Suffixed test schemes are platform-specific: the
-Android `dev` and `partner` build flavors register `yanezbio-dev://sign` and
-`yanezbio-partner://sign`. iOS currently registers only `yanezbio://` (no
-suffixed scheme yet), so iOS test builds use `yanezbio://` as well.
+| Environment | `DEEP_LINK_BASE` |
+| --- | --- |
+| Production | `https://yid.yanez.ai/open` |
+| Partner test (ptest) | `https://ptest.yanez.ai/open` |
+
+There is one exact path, `/open`, with nothing beneath it (`/open/foo` is a
+`404`). Everything the link needs to carry rides in the query string.
 
 | Parameter | Required | Notes |
 | --- | --- | --- |
@@ -27,6 +34,20 @@ suffixed scheme yet), so iOS test builds use `yanezbio://` as well.
 | `app_id` | yes | Your `partner_id` (e.g. `ptr_416582cd9ea9bb6c3750de1c`). |
 | `kid` | no | Signing key id. Include if you manage multiple keys. |
 | `app_sig` | yes | Ed25519 signature. **Must be the last parameter.** |
+
+## How the Link Resolves
+
+iOS (Universal Links) and Android (App Links) hand the link to YanezYID when
+it's installed and has claimed the domain; otherwise the link opens normally
+in the browser and `{DEEP_LINK_BASE}` 302-redirects the user to the App Store
+or Google Play automatically, based on their device. This is what makes the
+HTTPS form safe to render as a **QR code**: it never dead-ends.
+
+!!! info "Falls back to the store, never fails silently"
+
+    If the installed app hasn't claimed the domain yet, the link simply opens
+    the App Store / Play Store listing instead of the app — the same
+    graceful fallback a user with no app installed gets.
 
 ## Supported Events
 
@@ -71,7 +92,8 @@ Keep the exact bytes stable, since the signature is computed over them.
 
 The app verifies `app_sig` against your registered public key. To sign:
 
-1. Build the complete deep link string with all parameters **except** `app_sig`.
+1. Build the complete deep link string (`{DEEP_LINK_BASE}` plus all parameters)
+   **except** `app_sig`.
 2. Take the exact UTF-8 bytes of that string — do not re-order, percent-decode,
    or normalize.
 3. Sign with your Ed25519 private key.
@@ -96,6 +118,8 @@ def sign_deep_link(unsigned_url: str, private_key_hex: str) -> str:
 ```python
 import json, base64, uuid
 
+DEEP_LINK_BASE = "https://yid.yanez.ai/open"  # https://ptest.yanez.ai/open in partner test
+
 message = json.dumps({
     "v": 1,
     "rp": "your.rp.domain",
@@ -114,7 +138,7 @@ request_id = str(uuid.uuid4())
 callback = "https://your-backend.example.com/api/yanez/callback"
 
 unsigned = (
-    f"yanezbio://sign"
+    f"{DEEP_LINK_BASE}"
     f"?message={encoded_message}"
     f"&callback={urllib.parse.quote(callback, safe='')}"
     f"&method=post"
@@ -126,6 +150,32 @@ unsigned = (
 
 deep_link = sign_deep_link(unsigned, PRIVATE_KEY_HEX)
 ```
+
+## Custom Scheme (Deprecated)
+
+!!! warning "Deprecated — migrate to the HTTPS App Link"
+
+    The `yanezbio://` custom scheme is deprecated. It still works, but it fails
+    silently when the app isn't installed — nothing happens, with no way to
+    recover — so it must not be used for new integrations. Migrate existing
+    integrations to the [HTTPS URL format](#url-format); the query string and
+    signing are unchanged.
+
+The deprecated form carries the same parameters on a different base:
+
+```
+yanezbio://sign?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&event=<event>&description=<text>&app_id=<partner_id>[&kid=<kid>]&app_sig=<b64url>
+```
+
+Production builds register the `yanezbio://sign` scheme. Suffixed test schemes
+are platform-specific: the Android `dev` and `partner` build flavors register
+`yanezbio-dev://sign` and `yanezbio-partner://sign`. iOS registers only
+`yanezbio://` (no suffixed scheme), so iOS test builds use `yanezbio://` as
+well.
+
+Signing is identical to the HTTPS case: build the complete custom-scheme URL
+with every parameter except `app_sig`, sign those exact bytes, and append
+`&app_sig=<signature>` last.
 
 ## Common Errors
 

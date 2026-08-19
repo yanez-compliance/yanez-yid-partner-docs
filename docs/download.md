@@ -21,18 +21,18 @@ Partner applications do **not** embed this app. They hand off to it with a
 [![Get it on Google Play](assets/badge-google-play.png)](https://play.google.com/store/apps/details?id=ai.yanez.yid){ .badge .badge--google data-os="android" }
 </div>
 
-<p class="app-panel__req">Requires iOS 17.6 or later (v1.1.0) · Android 9.0 or later (v1.1.0)</p>
+<p class="app-panel__req">Requires iOS 17.6 or later (v1.3.0) · Android 9.0 or later (v1.3.0)</p>
 </div>
 
 ## Supported versions
 
-| | iOS | Android |
-| --- | --- | --- |
-| Current release | **1.1.0** | **1.1.0** |
-| Requires | iOS 17.6 or later | Android 9.0 or later |
-| Package identifier | `com.yanez.baund` | `ai.yanez.yid` |
-| Deep-link scheme | `yanezbio://` | `yanezbio://` |
-| Last updated | 15 July 2026 | 28 July 2026 |
+| | iOS                         | Android                     |
+| --- |-----------------------------|-----------------------------|
+| Current release | **1.3.0**                   | **1.3.0**                   |
+| Requires | iOS 17.6 or later           | Android 9.0 or later        |
+| Package identifier | `com.yanez.baund`           | `ai.yanez.yid`              |
+| Deep link | `https://yid.yanez.ai/open` | `https://yid.yanez.ai/open` |
+| Last updated | 18 August 2026              | 18 August 2026              |
 
 Publisher: YANEZ COMPLIANCE INC.
 
@@ -49,10 +49,27 @@ Publisher: YANEZ COMPLIANCE INC.
     Gate behaviour on what the callback actually returns, never on an assumed
     app version.
 
-## URI schemes by build
+## Deep-link URLs by environment
 
-Production builds register `yanezbio://sign` on both platforms. Test schemes
-are **not** symmetric across platforms:
+Deliver the signed deep link as an HTTPS App Link (iOS Universal Link / Android
+App Link). The base URL depends on the environment, not the build flavor:
+
+| Environment | `DEEP_LINK_BASE` |
+| --- | --- |
+| Production | `https://yid.yanez.ai/open` |
+| Partner test (ptest) | `https://ptest.yanez.ai/open` |
+
+If YanezYID isn't installed, or the installed version hasn't claimed the
+domain yet, the link falls back to the App Store or Google Play instead of
+failing silently. See [Deep Link Signing](deep-link-signing.md#url-format) for
+the full format.
+
+### Custom scheme (deprecated)
+
+The `yanezbio://` custom scheme is deprecated: it still resolves, but it fails
+silently when the app isn't installed. Migrate to the HTTPS form. For existing
+integrations, production builds register `yanezbio://sign` on both platforms.
+Test schemes are **not** symmetric across platforms:
 
 | Build | iOS scheme | Android scheme |
 | --- | --- | --- |
@@ -64,43 +81,45 @@ iOS currently registers only `yanezbio://` — there is no suffixed test scheme 
 so iOS test builds share the production scheme. Do not assume an Android-style
 suffix will resolve on iOS.
 
-Integrate against `yanezbio://` for production on both platforms.
-
 ## Deep-link testbed
 
 Use this to confirm the app opens and rejects an unsigned link before you wire
 up your backend signer.
 
-### 1. Confirm the app is installed and the scheme resolves
+### 1. Confirm the app is installed and the link resolves
 
 An unsigned link should open the app and be **rejected** with *"Untrusted
 signing request"*. That rejection is the successful outcome of this step — it
-proves the scheme resolved and signature enforcement is active.
+proves the link resolved and signature enforcement is active. If the link opens
+the store instead, the app isn't installed or hasn't claimed the domain yet
+(see [Troubleshooting](#troubleshooting)).
 
 ```text
-yanezbio://sign?message=eyJ2IjoxfQ&callback=https%3A%2F%2Fexample.com%2Fcb&method=redirect&request_id=00000000-0000-0000-0000-000000000000&event=enroll&description=Scheme+test&app_id=ptr_your_id
+https://ptest.yanez.ai/open?message=eyJ2IjoxfQ&callback=https%3A%2F%2Fexample.com%2Fcb&method=redirect&request_id=00000000-0000-0000-0000-000000000000&event=enroll&description=Link+test&app_id=ptr_your_id
 ```
 
 === "Android"
 
     ```bash
-    adb shell am start -a android.intent.action.VIEW -d "yanezbio://sign?..."
-
-    # dev build flavor
-    adb shell am start -a android.intent.action.VIEW -d "yanezbio-dev://sign?..."
+    adb shell am start -a android.intent.action.VIEW -d "https://ptest.yanez.ai/open?..."
     ```
 
 === "iOS Simulator"
 
     ```bash
-    xcrun simctl openurl booted "yanezbio://sign?..."
+    xcrun simctl openurl booted "https://ptest.yanez.ai/open?..."
     ```
 
 === "Device"
 
-    Host the link on an HTTPS page you control and tap it, or render it as a QR
-    code and scan it with the device camera. Pasting a custom scheme directly
-    into a mobile browser address bar is unreliable.
+    Render the link as a QR code and scan it with the device camera, or host it
+    on an HTTPS page you control and tap it.
+
+The deprecated custom scheme opens the same way with `yanezbio://sign?...` in
+place of the HTTPS base (`yanezbio-dev://sign?...` or
+`yanezbio-partner://sign?...` for the Android `dev` and `partner` build
+flavors). Pasting a custom scheme directly into a mobile browser address bar is
+unreliable.
 
 ### 2. Confirm a signed link is accepted
 
@@ -122,7 +141,8 @@ Yanez has allowlisted your callback domain.
 
 | Symptom | Cause |
 | --- | --- |
-| Nothing happens when the link opens | App not installed, or the scheme does not match the installed build flavor. Check the table above. |
+| Nothing happens when a custom-scheme link opens | App not installed, or the scheme does not match the installed build flavor (see the deprecated custom-scheme table above). Switch to the HTTPS App Link, which falls back to the store instead. |
+| HTTPS deep link always opens the store, even with the app installed | The installed app version hasn't claimed the `DEEP_LINK_BASE` domain yet (App Links / Universal Links). Expected until the user updates to an app version that supports it — not an integration bug on your side. |
 | "Untrusted signing request" | `app_sig` is missing, malformed, or does not verify against your registered public key. Also shown when `app_id` is absent. |
 | App opens but no callback arrives | `method=post` to a non-allowlisted host — silently dropped on Android. Switch to `redirect` to confirm, then request allowlisting. |
 | Signature verifies locally but not in the app | `app_sig` must be the **last** parameter, and signed over the exact unsigned URL bytes with no re-ordering or re-encoding. |

@@ -27,3 +27,5 @@
 **partner_id** — The Yanez-issued identifier for a partner account (e.g. `ptr_…`).
 
 **kid** — The partner signing-key identifier. Included in every signed request so Yanez can resolve the correct public key.
+
+**DEEP_LINK_BASE** — The per-environment HTTPS base URL for the App Link / Universal Link deep link (e.g. `https://yid.yanez.ai/open` in production, `https://ptest.yanez.ai/open` in partner test). The signed query string is appended to it; the link falls back to the app store when the app isn't installed. Replaces the deprecated `yanezbio://sign` custom scheme. See [Deep Link Signing](deep-link-signing.md#url-format).
