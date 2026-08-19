@@ -12,6 +12,13 @@ The integration reference was corrected against the shipped implementation.
 Several documented behaviours were wrong; if you integrated before this date,
 re-read the callback and validation pages.
 
+!!! warning "Partially superseded"
+
+    Two statements below were themselves wrong — the `post` callback allowlist
+    (there is none) and the iOS custom-scheme note (iOS test builds register a
+    suffixed scheme). See the
+    [2026-08-19 corrections](deep-link-signing-corrections.md).
+
 <!-- more -->
 
 ## :material-alert: Corrected behaviour

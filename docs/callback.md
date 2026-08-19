@@ -51,13 +51,27 @@ The deep link's `method` parameter selects how YanezYID returns the result:
 | `post` | The payload above is sent as an `application/json` POST body to the `callback` URL. |
 | `redirect` | The same fields are returned as query parameters appended to the `callback` URL (`keys` is serialized as a JSON string parameter). |
 
-**`post` callbacks require an allowlisted HTTPS domain.** The Android app
-delivers a `post` callback only to an **HTTPS** URL whose host is a
-Yanez-allowlisted domain (currently `yanez.ai` and its subdomains);
-any other host is silently rejected. `redirect` callbacks have no domain
-restriction. iOS does not currently enforce this allowlist, but do not rely on
-the asymmetry. If your callback runs on your own domain, use `method=redirect`
-or ask Yanez to allowlist your callback domain before launch.
+There is no callback-domain allowlist on either platform: `post` delivers to
+whatever URL the signed link carries. Use an HTTPS endpoint on your own backend
+that is reachable from the public internet — the request comes from the user's
+phone, not from Yanez servers.
+
+**Respond to a `post` callback with `2xx`.** YanezYID treats any `2xx` as
+delivered. Any other status is shown to the user as a failed signing and is not
+retried; a few statuses map to specific messages, so return them deliberately
+or not at all:
+
+| Your response | What the user sees |
+| --- | --- |
+| `2xx` | Success. |
+| `400` | "Partner rejected the request." |
+| `401` | "Partner rejected the signature." |
+| `403` | "Additional verification required or denied." |
+| `404` | "Unknown or expired signing request." |
+| `409` | "This request was already signed or is a duplicate." |
+| `410` | "This signing request has expired." |
+| `5xx` | "The partner service had an error." |
+| other `4xx` | "Partner rejected the delivery." |
 
 The verification steps below are identical for both modes — always verify the
 signature over the decoded `message` bytes regardless of how the result arrived.
