@@ -83,7 +83,8 @@ first thing support asks.
 - [ ] A fresh nonce per attempt, including retries.
 - [ ] `X-Yanez-Signature-Alg` is `EdDSA` and matches the registered key.
 - [ ] Yanez has confirmed your `kid` is active in this environment.
-- [ ] For `method=post` callbacks, the callback host is allowlisted.
+- [ ] For `method=post` callbacks, your endpoint is reachable from the phone
+      (public HTTPS) and returns `2xx`.
 - [ ] For callbacks, the BLS signature is verified over the **decoded** `message`
       bytes, and `eth_address` is re-derived server-side.
 

@@ -23,11 +23,14 @@ HTTPS form.
 There is one exact path, `/open`, with nothing beneath it (`/open/foo` is a
 `404`). Everything the link needs to carry rides in the query string.
 
+`app_sig` is computed over the canonical `yanezbio://sign?<query>` form of the
+link, never over the HTTPS URL — see [Signing](#signing).
+
 | Parameter | Required | Notes |
 | --- | --- | --- |
 | `message` | yes | Base64url-encoded payload the app signs verbatim (see [Message Payload](#message-payload)). |
-| `callback` | yes | URL YanezYID posts results to. For `method=post` this must be an HTTPS URL on a Yanez-allowlisted domain — see [Callback Verification](callback.md#delivery-modes). |
-| `method` | yes | `post` or `redirect` — selects callback delivery (case-insensitive). If omitted or unrecognized the app defaults to `redirect`. See [Delivery Modes](callback.md#delivery-modes). |
+| `callback` | yes | URL YanezYID delivers the result to — an HTTPS endpoint on your backend for `method=post`, or any URL the phone can open for `method=redirect`. Percent-encode it. There is no callback-domain allowlist. See [Delivery Modes](callback.md#delivery-modes). |
+| `method` | yes | `post` or `redirect` — selects callback delivery (case-insensitive). Must be present and non-empty or the link is rejected; an unrecognized value falls back to `redirect`. See [Delivery Modes](callback.md#delivery-modes). |
 | `request_id` | yes | Unique per-request identifier (a UUID works, but the app treats it as an opaque string). Use a fresh value per request. |
 | `event` | yes | See [Supported Events](#supported-events). |
 | `description` | yes | Short human-readable label shown in YanezYID. |
@@ -90,15 +93,29 @@ Keep the exact bytes stable, since the signature is computed over them.
 
 ## Signing
 
-The app verifies `app_sig` against your registered public key. To sign:
+The app verifies `app_sig` against your registered public key. The signature is
+**always computed over the canonical custom-scheme form of the link**, whatever
+base you deliver it on: YanezYID rewrites a trusted HTTPS App Link
+(`https://<host>/open?<query>`) to `yanezbio://sign?<query>` before it
+verifies, so the signed bytes never include `{DEEP_LINK_BASE}`.
 
-1. Build the complete deep link string (`{DEEP_LINK_BASE}` plus all parameters)
-   **except** `app_sig`.
+To sign:
+
+1. Build the canonical string `yanezbio://sign?<query>` with every parameter
+   **except** `app_sig`, in the order shown above.
 2. Take the exact UTF-8 bytes of that string — do not re-order, percent-decode,
    or normalize.
 3. Sign with your Ed25519 private key.
 4. Base64url-encode the 64-byte signature.
 5. Append `&app_sig=<signature>` as the final parameter.
+6. Deliver the link as `{DEEP_LINK_BASE}?<query>&app_sig=<signature>` — the
+   same query string, byte for byte, on the HTTPS base.
+
+!!! danger "Do not sign the HTTPS URL"
+
+    A signature computed over `https://yid.yanez.ai/open?...` is rejected by
+    the app with *"Untrusted signing request"*. Sign `yanezbio://sign?...`, then
+    swap only the base.
 
 ```python
 import base64
@@ -107,48 +124,58 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 def b64url(raw: bytes) -> str:
     return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
 
-def sign_deep_link(unsigned_url: str, private_key_hex: str) -> str:
+def sign_deep_link(canonical_unsigned: str, private_key_hex: str) -> str:
+    """`canonical_unsigned` is `yanezbio://sign?...` with every parameter except app_sig."""
     private_key = Ed25519PrivateKey.from_private_bytes(bytes.fromhex(private_key_hex))
-    sig = b64url(private_key.sign(unsigned_url.encode()))
-    return f"{unsigned_url}&app_sig={sig}"
+    sig = b64url(private_key.sign(canonical_unsigned.encode()))
+    return f"{canonical_unsigned}&app_sig={sig}"
 ```
 
 ## Example (Enroll)
 
 ```python
-import json, base64, uuid
+import base64, json, secrets, time, urllib.parse, uuid
 
+PARTNER_ID = "ptr_..."        # your partner_id
+PRIVATE_KEY_HEX = "..."       # 32-byte Ed25519 private key, hex
 DEEP_LINK_BASE = "https://yid.yanez.ai/open"  # https://ptest.yanez.ai/open in partner test
+CANONICAL_BASE = "yanezbio://sign"            # what app_sig covers, in every environment
 
+request_id = str(uuid.uuid4())
+now = int(time.time())
 message = json.dumps({
     "v": 1,
     "rp": "your.rp.domain",
-    "request_id": str(uuid.uuid4()),
+    "request_id": request_id,
     "user_id": "your-internal-user-id",
     "action": "enroll",
     "ref": "enroll:your-internal-user-id",
     "required_tier": None,
     "nonce": secrets.token_urlsafe(32),
-    "iat": int(time.time()),
-    "exp": int(time.time()) + 604800,
+    "iat": now,
+    "exp": now + 604800,
 }, separators=(",", ":"))
 
 encoded_message = base64.urlsafe_b64encode(message.encode()).rstrip(b"=").decode()
-request_id = str(uuid.uuid4())
 callback = "https://your-backend.example.com/api/yanez/callback"
 
-unsigned = (
-    f"{DEEP_LINK_BASE}"
-    f"?message={encoded_message}"
+query = (
+    f"message={encoded_message}"
     f"&callback={urllib.parse.quote(callback, safe='')}"
     f"&method=post"
     f"&request_id={request_id}"
     f"&event=enroll"
-    f"&description=Yanez+Enrollment"
+    f"&description={urllib.parse.quote('Yanez Enrollment', safe='')}"
     f"&app_id={PARTNER_ID}"
 )
 
-deep_link = sign_deep_link(unsigned, PRIVATE_KEY_HEX)
+# 1. Sign the canonical form.
+signed_canonical = sign_deep_link(f"{CANONICAL_BASE}?{query}", PRIVATE_KEY_HEX)
+# -> yanezbio://sign?message=...&app_id=ptr_...&app_sig=...
+
+# 2. Deliver the identical query (including app_sig) on the HTTPS base.
+deep_link = f"{DEEP_LINK_BASE}?{signed_canonical.split('?', 1)[1]}"
+# -> https://yid.yanez.ai/open?message=...&app_id=ptr_...&app_sig=...
 ```
 
 ## Custom Scheme (Deprecated)
@@ -167,18 +194,28 @@ The deprecated form carries the same parameters on a different base:
 yanezbio://sign?message=<b64url>&callback=<url>&method=post&request_id=<uuid>&event=<event>&description=<text>&app_id=<partner_id>[&kid=<kid>]&app_sig=<b64url>
 ```
 
-Production builds register the `yanezbio://sign` scheme. Suffixed test schemes
-are platform-specific: the Android `dev` and `partner` build flavors register
-`yanezbio-dev://sign` and `yanezbio-partner://sign`. iOS registers only
-`yanezbio://` (no suffixed scheme), so iOS test builds use `yanezbio://` as
-well.
+Production builds on both platforms register `yanezbio://sign`. Test builds
+differ by platform:
 
-Signing is identical to the HTTPS case: build the complete custom-scheme URL
-with every parameter except `app_sig`, sign those exact bytes, and append
-`&app_sig=<signature>` last.
+| Build | iOS | Android |
+| --- | --- | --- |
+| Production | `yanezbio://sign` | `yanezbio://sign` |
+| Dev | `yanezbio-dev://sign` only | `yanezbio://sign` (also `yanezbio-dev://sign`) |
+| Partner test | `yanezbio-partner://sign` only | `yanezbio://sign` (also `yanezbio-partner://sign`) |
+
+An iOS test build does **not** respond to `yanezbio://sign` — use its suffixed
+scheme; the app normalizes it to `yanezbio` before verifying, so the signature
+is unchanged. On Android use `yanezbio://sign` on every flavor: the suffixed
+Android schemes open the app, but a signed link delivered on them currently
+fails signature verification.
+
+Signing is identical to the HTTPS case: `app_sig` covers the canonical
+`yanezbio://sign?<query>` bytes with every parameter except `app_sig`, appended
+last — see [Signing](#signing).
 
 ## Common Errors
 
-| Error | Cause |
+| Message | Cause |
 | --- | --- |
-| "Untrusted signing request" | `app_sig` is missing, malformed, or doesn't verify against the registered public key. Also shown when `app_id` is absent and the app cannot look up the partner record. |
+| "Untrusted signing request" | `app_sig` is missing, malformed, not the last parameter, or doesn't verify against the registered public key — including a signature computed over the HTTPS URL instead of `yanezbio://sign?...`. Also shown when `app_id` or another required parameter is absent. |
+| "This signing request could not be verified" | The app could not fetch the partner's keys: `app_id` is not registered **in this app's environment** (a ptest `partner_id` on the production app, or vice versa), the partner has no active key, or the device is offline. |

@@ -47,11 +47,6 @@ example.
 The partner private key remains on the backend. The Android app receives only
 public or short-lived flow data.
 
-Android-specific: YanezYID only POSTs a `method=post` callback to an
-HTTPS URL on a Yanez-allowlisted domain (`yanez.ai` and subdomains).
-If your backend callback is on your own domain, use `method=redirect` or have
-your callback domain allowlisted. See [Callback Verification](../callback.md#delivery-modes).
-
 ## Completion
 
 After the Android flow completes, the partner backend should validate any

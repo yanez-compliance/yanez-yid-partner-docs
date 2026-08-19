@@ -61,7 +61,7 @@ You cannot complete step 4 until Yanez confirms your key is active.
 
 ## 3. Build the request signer
 
-Every signed request carries eight `X-Yanez-*` headers. The signature covers a
+Every signed request carries seven `X-Yanez-*` headers. The signature covers a
 canonical string — not the raw HTTP request — built by joining these nine lines
 with `\n`, with no trailing newline:
 

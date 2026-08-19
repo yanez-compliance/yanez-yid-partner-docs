@@ -52,7 +52,10 @@ Publisher: YANEZ COMPLIANCE INC.
 ## Deep-link URLs by environment
 
 Deliver the signed deep link as an HTTPS App Link (iOS Universal Link / Android
-App Link). The base URL depends on the environment, not the build flavor:
+App Link). The base URL depends on the environment, and only the matching build
+of YanezYID claims it: the store apps above claim `yid.yanez.ai`;
+`ptest.yanez.ai` is claimed only by the partner-test build, which is not on the
+stores — ask your Yanez contact for it.
 
 | Environment | `DEEP_LINK_BASE` |
 | --- | --- |
@@ -74,12 +77,15 @@ Test schemes are **not** symmetric across platforms:
 | Build | iOS scheme | Android scheme |
 | --- | --- | --- |
 | Production | `yanezbio://sign` | `yanezbio://sign` |
-| Dev | `yanezbio://sign` | `yanezbio-dev://sign` |
-| Partner test | `yanezbio://sign` | `yanezbio-partner://sign` |
+| Dev | `yanezbio-dev://sign` only | `yanezbio://sign` (also `yanezbio-dev://sign`) |
+| Partner test | `yanezbio-partner://sign` only | `yanezbio://sign` (also `yanezbio-partner://sign`) |
 
-iOS currently registers only `yanezbio://` — there is no suffixed test scheme —
-so iOS test builds share the production scheme. Do not assume an Android-style
-suffix will resolve on iOS.
+An iOS test build registers **only** its suffixed scheme — `yanezbio://sign`
+does nothing on it. Every Android flavor accepts `yanezbio://sign`; use that on
+Android, because a signed link opened through a suffixed Android scheme
+currently fails signature verification. Whatever scheme opens the app, the
+signature covers the canonical `yanezbio://sign?<query>` bytes — see
+[Signing](deep-link-signing.md#signing).
 
 ## Deep-link testbed
 
@@ -88,11 +94,14 @@ up your backend signer.
 
 ### 1. Confirm the app is installed and the link resolves
 
-An unsigned link should open the app and be **rejected** with *"Untrusted
-signing request"*. That rejection is the successful outcome of this step — it
-proves the link resolved and signature enforcement is active. If the link opens
-the store instead, the app isn't installed or hasn't claimed the domain yet
-(see [Troubleshooting](#troubleshooting)).
+An unsigned link should open the app and be **rejected**. With your real
+`app_id` the message is *"Untrusted signing request"*; with an `app_id` the app
+cannot look up (unregistered, or registered in the other environment) it is
+*"This signing request could not be verified"*. Either rejection is the
+successful outcome of this step — it proves the link resolved and signature
+enforcement is active. If the link opens the store instead, the app isn't
+installed or hasn't claimed the domain yet (see
+[Troubleshooting](#troubleshooting)).
 
 ```text
 https://ptest.yanez.ai/open?message=eyJ2IjoxfQ&callback=https%3A%2F%2Fexample.com%2Fcb&method=redirect&request_id=00000000-0000-0000-0000-000000000000&event=enroll&description=Link+test&app_id=ptr_your_id
@@ -117,9 +126,9 @@ https://ptest.yanez.ai/open?message=eyJ2IjoxfQ&callback=https%3A%2F%2Fexample.co
 
 The deprecated custom scheme opens the same way with `yanezbio://sign?...` in
 place of the HTTPS base (`yanezbio-dev://sign?...` or
-`yanezbio-partner://sign?...` for the Android `dev` and `partner` build
-flavors). Pasting a custom scheme directly into a mobile browser address bar is
-unreliable.
+`yanezbio-partner://sign?...` for the iOS `dev` and `partner` builds — see the
+table above). Pasting a custom scheme directly into a mobile browser address
+bar is unreliable.
 
 ### 2. Confirm a signed link is accepted
 
@@ -129,13 +138,14 @@ should now show your `description` and proceed with the flow.
 
 ### 3. Confirm the callback lands
 
-| `method` | Requirement |
+| `method` | What arrives |
 | --- | --- |
-| `post` | HTTPS URL on a Yanez-allowlisted domain (currently `yanez.ai` and its subdomains). Android silently drops anything else. |
-| `redirect` | No domain restriction. Use this while testing against your own domain. |
+| `post` | A JSON `POST` to your `callback` URL from the phone. Return `2xx`; anything else is shown to the user as a failed signing. |
+| `redirect` | The same fields as query parameters on your `callback` URL, opened on the phone. |
 
-Start with `method=redirect` against your own host, then switch to `post` once
-Yanez has allowlisted your callback domain.
+There is no callback-domain allowlist on either platform — `post` works against
+your own backend from the first test. See
+[Delivery Modes](callback.md#delivery-modes).
 
 ## Troubleshooting
 
@@ -143,6 +153,7 @@ Yanez has allowlisted your callback domain.
 | --- | --- |
 | Nothing happens when a custom-scheme link opens | App not installed, or the scheme does not match the installed build flavor (see the deprecated custom-scheme table above). Switch to the HTTPS App Link, which falls back to the store instead. |
 | HTTPS deep link always opens the store, even with the app installed | The installed app version hasn't claimed the `DEEP_LINK_BASE` domain yet (App Links / Universal Links). Expected until the user updates to an app version that supports it — not an integration bug on your side. |
-| "Untrusted signing request" | `app_sig` is missing, malformed, or does not verify against your registered public key. Also shown when `app_id` is absent. |
-| App opens but no callback arrives | `method=post` to a non-allowlisted host — silently dropped on Android. Switch to `redirect` to confirm, then request allowlisting. |
-| Signature verifies locally but not in the app | `app_sig` must be the **last** parameter, and signed over the exact unsigned URL bytes with no re-ordering or re-encoding. |
+| "Untrusted signing request" | `app_sig` is missing, malformed, or does not verify against your registered public key — most often because it was computed over the HTTPS URL instead of `yanezbio://sign?...`. Also shown when `app_id` or another required parameter is absent. |
+| "This signing request could not be verified" | The app could not fetch keys for `app_id`: not registered in this app's environment (ptest `partner_id` on the production app, or vice versa), no active key, or the device is offline. |
+| App opens but no callback arrives | The phone could not reach your `callback` URL, or your endpoint returned a non-`2xx` status. Check your server logs for the `POST` and its response code. |
+| Signature verifies locally but not in the app | `app_sig` must be the **last** parameter, signed over the canonical `yanezbio://sign?<query>` bytes (never the HTTPS URL) with no re-ordering or re-encoding — see [Signing](deep-link-signing.md#signing). |
