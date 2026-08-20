@@ -37,6 +37,10 @@ YanezYID POSTs `application/json`:
 | `matched_tier` | The tier whose key produced `signature`. |
 | `signature` | A single BLS12-381 G2 signature (96 bytes), produced by the matched tier's key. |
 
+Successful callbacks include both `matched_tier` and `signature`. In `redirect`
+mode, parse them as optional query parameters: if either is absent, the callback
+cannot pass [Verification Steps](#verification-steps) 3–4.
+
 The callback carries no verification-status flag. **The backend MUST
 independently verify the BLS signature (see [Verification
 Steps](#verification-steps)) and never trust any client-asserted "verified"
