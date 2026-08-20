@@ -61,8 +61,7 @@ You cannot complete step 4 until Yanez confirms your key is active.
 
 ## 3. Build the request signer
 
-Every signed request carries seven `X-Yanez-*` headers. The signature covers a
-canonical string — not the raw HTTP request — built by joining these nine lines
+This signer authenticates the requests your backend sends to the Yanez server APIs, such as the validation call in step 4. It's separate from [deep link signing](deep-link-signing.md), which signs the links you hand to users. Every signed request carries seven `X-Yanez-*` headers. The signature covers a canonical string — not the raw HTTP request — built by joining these nine lines
 with `\n`, with no trailing newline:
 
 ```text

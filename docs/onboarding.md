@@ -27,8 +27,7 @@ Yanez provides:
 - launch checklist and test cases
 - supported handoff configuration for the selected platform
 
-Store `partner_id` and `kid` in backend configuration. Store the private key in
-backend secret storage.
+Store `partner_id` and `kid` in backend configuration.
 
 ## Key Generation
 
