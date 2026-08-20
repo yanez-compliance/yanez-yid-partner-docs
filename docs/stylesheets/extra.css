@@ -25,6 +25,13 @@
   --yz-hero-border:             rgba(122, 83, 253, 0.32);
 }
 
+/* -------------------------------------------------------------- Layout --- */
+
+/* Material's default 61rem grid is too narrow for the parameter tables. */
+.md-grid {
+  max-width: 76rem;
+}
+
 /* ---------------------------------------------------------------- Hero --- */
 
 .md-typeset .hero {
