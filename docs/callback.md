@@ -61,21 +61,25 @@ that is reachable from the public internet — the request comes from the user's
 phone, not from Yanez servers.
 
 **Respond to a `post` callback with `2xx`.** YanezYID treats any `2xx` as
-delivered. Any other status is shown to the user as a failed signing and is not
-retried; a few statuses map to specific messages, so return them deliberately
-or not at all:
+delivered. Any other status is shown to the user as a failed signing — a
+`STATUS · TITLE` header over the message — and is never retried, so the user
+must start a new signing. The app maps statuses to messages as follows; return
+the specific ones deliberately or not at all:
 
-| Your response | What the user sees |
-| --- | --- |
-| `2xx` | Success. |
-| `400` | "Partner rejected the request." |
-| `401` | "Partner rejected the signature." |
-| `403` | "Additional verification required or denied." |
-| `404` | "Unknown or expired signing request." |
-| `409` | "This request was already signed or is a duplicate." |
-| `410` | "This signing request has expired." |
-| `5xx` | "The partner service had an error." |
-| other `4xx` | "Partner rejected the delivery." |
+| Your response | Return it when | What the user sees |
+| --- | --- | --- |
+| `2xx` | Every [verification step](#verification-steps) passes. | Success — the app dismisses silently. |
+| `400` | The payload can't be parsed: missing fields, bad encoding, or an invalid `matched_tier` (step 3). | `400 · BAD REQUEST` — "Partner rejected the request." |
+| `401` | The signature, keys, or message fail verification (steps 2, 4–7, or 9). | `401 · SIGNATURE REJECTED` — "Partner rejected the signature." |
+| `403` | Step-up: `matched_tier` is below `required_tier` (step 8), or your policy denies the action. | `403 · STEP-UP REQUIRED` — "Additional verification required or denied." |
+| `404` | `request_id` is unknown (step 1). | `404 · CHALLENGE NOT FOUND` — "Unknown or expired signing request." |
+| `409` | `request_id` was already consumed — a duplicate or replayed delivery (step 1). | `409 · ALREADY USED` — "This request was already signed or is a duplicate." |
+| `410` | `request_id` has expired (step 1). | `410 · CHALLENGE EXPIRED` — "This signing request has expired." |
+| `5xx` | Your backend failed before it could verify. | `5xx · PARTNER ERROR` — "The partner service had an error." |
+| other `4xx` | Anything else. | `4xx · REJECTED` — "Partner rejected the delivery." |
+
+If the phone gets no HTTP response at all, the user sees `CONNECTION FAILED` —
+"Couldn't reach the partner. Please try again." — which also isn't retried.
 
 The verification steps below are identical for both modes — always verify the
 signature over the decoded `message` bytes regardless of how the result arrived.
