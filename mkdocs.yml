@@ -83,13 +83,13 @@ nav:
           - Authentication: authentication.md
           - Deep Link Signing: deep-link-signing.md
           - Callback Verification: callback.md
+          - Agent Authorization: agent-authorization.md
       - Backend API:
           - API Reference: api/backend-api.md
           - Errors: api/errors.md
       - Platform Guides:
           - Web Apps: platforms/web.md
           - Android Apps: platforms/android.md
-          - iPhone Apps: platforms/ios.md
       - Going Live:
           - Testing: testing.md
           - Privacy and Security: privacy-security.md

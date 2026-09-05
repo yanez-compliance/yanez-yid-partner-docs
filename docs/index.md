@@ -55,7 +55,7 @@ leave your backend, and every partner request is signed end to end.
 
     Handoff to YanezYID on iOS with App Attest, signed from your backend.
 
-    [:octicons-arrow-right-24: iOS integration](platforms/ios.md)
+    [:octicons-arrow-right-24: Deep link signing](deep-link-signing.md)
 
 </div>
 
