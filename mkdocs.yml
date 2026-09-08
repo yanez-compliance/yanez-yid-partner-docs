@@ -83,6 +83,7 @@ nav:
           - Authentication: authentication.md
           - Deep Link Signing: deep-link-signing.md
           - Callback Verification: callback.md
+          - Agent Authorization: agent-authorization.md
       - Backend API:
           - API Reference: api/backend-api.md
           - Errors: api/errors.md

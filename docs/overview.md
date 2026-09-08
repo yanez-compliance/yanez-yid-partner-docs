@@ -88,4 +88,8 @@ Yanez does not store partner private keys.
 | Partner request signing | Authenticate partner backend requests to Yanez. |
 | Record validation API | Validate a `yid` and optional public-key binding. |
 | Platform handoff | Start or return from web, Android, or iPhone user flows. |
+| Agent authorization | Ask a user to approve exact action terms and verify the resulting receipt. |
 
+Agent authorization uses its own credential and receipt contract. Start with
+[Agent Authorization](agent-authorization.md); do not treat its optional return URL
+as the callback used by the biometric deep-link signing flow.
