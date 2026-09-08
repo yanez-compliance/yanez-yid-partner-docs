@@ -31,6 +31,19 @@ See [Deep Link Signing](../deep-link-signing.md) for the full parameter
 reference, the `DEEP_LINK_BASE` per environment, signing steps, and a Python
 example.
 
+## Agent Authorization Return
+
+An agent-authorization request may include an optional `terms.return_url` when
+YanezYID should return the user to the partner app after an approval. Use an
+absolute custom-scheme or HTTPS URL without embedded credentials, and register
+any custom scheme in the partner app.
+
+YanezYID opens the URL only after the approval is synchronized and the user
+finishes the review. The URL receives no appended result fields and is not proof
+of approval; continue polling and verify the signed authorization receipt before
+acting. See [Agent Authorization](../agent-authorization.md#return-to-an-iphone-app)
+for the request example and security requirements.
+
 ## User Activity and Integrations
 
 YanezYID on iOS can read user-scoped activity and integrations for a `yid`
@@ -53,4 +66,3 @@ returned `yid` using:
 ```http
 POST /api/partners/records/validate
 ```
-
