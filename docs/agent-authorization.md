@@ -19,10 +19,10 @@ The canonical HTTP schemas, receipt rules, SDKs, and conformance fixtures live i
 See the canonical [HTTP quickstart](https://yanez-compliance.github.io/yanez-agent-authorization/http-quickstart/)
 for the complete create, poll, verify, and consume sequence.
 
-## Return to an iPhone app
+## Return to a mobile app
 
 Add an optional `return_url` to `terms` when YanezYID should return the user to an
-iPhone app after approval:
+Android or iPhone app after approval:
 
 ```json
 {
@@ -60,10 +60,10 @@ credentials. It may use a custom scheme registered by the partner app or an HTTP
 Paths, query parameters, and fragments are preserved. YanezYID does not append an
 authorization result or request identifier.
 
-On iOS, YanezYID opens the URL after the approval has been synchronized and the user
-finishes the review. It does not open the URL after rejection or when the review is
-closed without a decision. Opening the URL is best-effort, so the agent must continue
-to poll the authorization request.
+On Android and iOS, YanezYID opens the URL after the approval has been synchronized
+and the user finishes the review. It does not open the URL after rejection or when the
+review is closed without a decision. Opening the URL is best-effort, so the agent must
+continue to poll the authorization request.
 
 !!! warning "A return URL is navigation, not proof"
 

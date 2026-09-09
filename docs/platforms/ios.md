@@ -41,7 +41,7 @@ any custom scheme in the partner app.
 YanezYID opens the URL only after the approval is synchronized and the user
 finishes the review. The URL receives no appended result fields and is not proof
 of approval; continue polling and verify the signed authorization receipt before
-acting. See [Agent Authorization](../agent-authorization.md#return-to-an-iphone-app)
+acting. See [Agent Authorization](../agent-authorization.md#return-to-a-mobile-app)
 for the request example and security requirements.
 
 ## User Activity and Integrations
