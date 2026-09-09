@@ -47,6 +47,73 @@ example.
 The partner private key remains on the backend. The Android app receives only
 public or short-lived flow data.
 
+## Agent Authorization Return
+
+An agent-authorization request may include an optional `terms.return_url` when
+YanezYID should return the user to the partner app after an approval. Use an
+absolute custom-scheme or HTTPS URL without embedded credentials, and register
+any custom scheme in the partner app.
+
+Configure the callback activity as `singleTask`. `singleTop` is not sufficient:
+when YanezYID opens the return URL from its own task, Android may create a second
+partner activity with a fresh `ViewModel` instead of returning to the order that
+is waiting for authorization.
+
+```xml
+<activity
+    android:name=".MainActivity"
+    android:exported="true"
+    android:launchMode="singleTask">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="partner-app"
+            android:host="authorization-complete" />
+    </intent-filter>
+</activity>
+```
+
+Handle the URL both when Android creates the activity and when it delivers the
+URL to the existing activity:
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    private val store: OrderViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        store.handleAuthorizationReturn(intent?.data)
+        // Install the app UI.
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        store.handleAuthorizationReturn(intent.data)
+    }
+}
+```
+
+Before dispatching the authorization, preserve the merchant-generated attempt ID
+and the order context needed to redraw the pending screen. At minimum, retain them
+in a `SavedStateHandle` for activity and process recreation; use durable encrypted
+app storage if the order must also survive removal of the Android task. When the
+app starts or receives the return URL and an attempt is still active:
+
+1. Show the existing order's waiting-for-authorization screen.
+2. Resume polling with the same attempt ID. Do not create a replacement request.
+3. Retrieve and verify the signed approval receipt.
+4. Consume the single-use authorization.
+5. Show the order confirmation only after consumption succeeds.
+
+YanezYID opens the URL only after the approval is synchronized and the user
+finishes the review. The URL receives no appended result fields and is not proof
+of approval; continue polling and verify the signed authorization receipt before
+acting. See [Agent Authorization](../agent-authorization.md#return-to-a-mobile-app)
+for the request example and security requirements.
+
 ## Completion
 
 After the Android flow completes, the partner backend should validate any
@@ -55,4 +122,3 @@ returned `yid` using:
 ```http
 POST /api/partners/records/validate
 ```
-
