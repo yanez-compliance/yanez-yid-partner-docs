@@ -11,7 +11,8 @@ The canonical HTTP schemas, receipt rules, SDKs, and conformance fixtures live i
 
 1. The agent creates an authorization request with its `yak_` credential.
 2. YanezYID presents the pending request to the user.
-3. The user approves or rejects it. Approval requires a fresh biometric verification.
+3. The user approves or rejects it. Both decisions require a fresh biometric
+   verification and are signed by the user's registered biometric key.
 4. The agent polls the request and receives a signed receipt for an approval.
 5. The relying party verifies the receipt, compares the approved terms with the
    proposed action, and consumes it when the action is single-use.
@@ -27,6 +28,7 @@ Android or iPhone app after approval:
 ```json
 {
   "terms": {
+    "schema_version": 1,
     "action": "purchase",
     "approval_title": "Purchase running shoes",
     "summary": "Buy running shoes for $180.00 at Example Store",
@@ -34,8 +36,7 @@ Android or iPhone app after approval:
     "currency": "USD",
     "amount": {
       "minor_units": 18000,
-      "currency": "USD",
-      "display": "$180.00"
+      "currency": "USD"
     },
     "details": [
       {
@@ -54,6 +55,9 @@ Android or iPhone app after approval:
   "decision_window_seconds": 900
 }
 ```
+
+`schema_version` is required and must currently be `1`. Generate display text from
+`amount.minor_units` and `amount.currency`.
 
 `return_url` must be an absolute URL with a scheme and must not contain embedded
 credentials. It may use a custom scheme registered by the partner app or an HTTPS URL.
