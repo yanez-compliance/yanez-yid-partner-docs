@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 372" font-family="Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="arrow-l" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6e7781"/>
+    </marker>
+  </defs>
+
+  <style>
+    .box { stroke: #5a2ffe; stroke-width: 1.4; fill: rgba(90,47,254,0.05); }
+    .box-strong { stroke: #5a2ffe; stroke-width: 1.8; fill: rgba(90,47,254,0.10); }
+    .title { fill: #24292f; font-size: 13.5px; font-weight: 600; text-anchor: middle; }
+    .caption { fill: #57606a; font-size: 10.5px; text-anchor: middle; }
+    .label { fill: #57606a; font-size: 11px; text-anchor: middle; }
+    .conn { stroke: #6e7781; stroke-width: 1.4; fill: none; }
+  </style>
+
+  <!-- Row 1: User -> Partner app -> Yanez app -->
+  <rect class="box" x="20" y="30" width="130" height="56" rx="10"/>
+  <text class="title" x="85" y="63">User</text>
+
+  <rect class="box" x="210" y="30" width="170" height="56" rx="10"/>
+  <text class="title" x="295" y="63">Partner app</text>
+
+  <rect class="box" x="460" y="30" width="170" height="56" rx="10"/>
+  <text class="title" x="545" y="63">Yanez app</text>
+
+  <line class="conn" x1="150" y1="58" x2="205" y2="58" marker-end="url(#arrow-l)"/>
+  <line class="conn" x1="380" y1="58" x2="455" y2="58" marker-end="url(#arrow-l)"/>
+  <text class="label" x="420" y="50">QR / deep link</text>
+
+  <!-- Elbow: Yanez app -> Partner backend (out-of-band callback) -->
+  <path class="conn" d="M545,86 V130 H350 V165" marker-end="url(#arrow-l)"/>
+  <text class="label" x="447" y="124">out-of-band callback</text>
+
+  <!-- Row 2: Partner backend -->
+  <rect class="box-strong" x="245" y="170" width="210" height="56" rx="10"/>
+  <text class="title" x="350" y="203">Partner backend</text>
+
+  <!-- Fan-out: DB / Cache / Yanez registry -->
+  <path class="conn" d="M350,226 V248" />
+  <path class="conn" d="M120,248 H600" />
+  <path class="conn" d="M120,248 V265" marker-end="url(#arrow-l)"/>
+  <path class="conn" d="M350,248 V265" marker-end="url(#arrow-l)"/>
+  <path class="conn" d="M600,248 V265" marker-end="url(#arrow-l)"/>
+
+  <rect class="box" x="40" y="270" width="160" height="56" rx="10"/>
+  <text class="title" x="120" y="303">Partner DB</text>
+  <text class="caption" x="120" y="344">account ↔ yid links</text>
+
+  <rect class="box" x="270" y="270" width="160" height="56" rx="10"/>
+  <text class="title" x="350" y="303">Partner cache</text>
+  <text class="caption" x="350" y="344">challenges (short-lived)</text>
+
+  <rect class="box" x="500" y="270" width="200" height="56" rx="10"/>
+  <text class="title" x="600" y="303">Yanez registry</text>
+  <text class="caption" x="600" y="344">yid ↔ key lookup</text>
+</svg>
