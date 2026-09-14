@@ -56,8 +56,32 @@ Android or iPhone app after approval:
 }
 ```
 
-`schema_version` is required and must currently be `1`. Generate display text from
-`amount.minor_units` and `amount.currency`.
+`schema_version` is required and must currently be `1`. For financial actions,
+generate display text from `amount.minor_units` and `amount.currency`. When `amount`
+is present, the top-level `currency` is required and must match `amount.currency`.
+
+For non-financial actions, omit both `amount` and `currency`. YanezYID then omits the
+Amount row from both the approval and completed-verification screens. Do not send a
+zero-dollar placeholder:
+
+```json
+{
+  "terms": {
+    "schema_version": 1,
+    "action": "document.signature.authorize",
+    "approval_title": "Sign mutual NDA",
+    "summary": "Authorize your signature on the mutual NDA with Yanez Pulse.",
+    "merchant": "Documenso",
+    "details": [
+      {"label": "Document", "value": "Mutual Non-Disclosure Agreement"},
+      {"label": "Counterparty", "value": "Yanez Pulse"},
+      {"label": "Signing as", "value": "Yanez AI"},
+      {"label": "Agreement ID", "value": "NDA-2026-0914"},
+      {"label": "Governing law", "value": "California"}
+    ]
+  }
+}
+```
 
 `return_url` must be an absolute URL with a scheme and must not contain embedded
 credentials. It may use a custom scheme registered by the partner app or an HTTPS URL.
